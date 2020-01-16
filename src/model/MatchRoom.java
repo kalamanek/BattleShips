@@ -131,9 +131,14 @@ public class MatchRoom extends Thread {
      *
      * @param name the player's desired name
      */
-    public void sendName(String name, String password) {
+    public void sendLogin(String name, String password) {
         this.nameState = NameState.WAITING;
         sendStringArray(new String[]{"login", name, password});
+    }
+
+    public void sendRegistration(String name, String password){
+        this.nameState = NameState.WAITING;
+        sendStringArray(new String[]{"register", name, password});
     }
 
 

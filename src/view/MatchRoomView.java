@@ -70,7 +70,7 @@ public class MatchRoomView extends JFrame {
         pack();
 
         this.matchRoom = new MatchRoom(this);
-        askForName();
+        askForLoginOrRegister();
         matchRoom.joinLobby();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,12 +92,69 @@ public class MatchRoomView extends JFrame {
 
     }
 
-    private void askForName() {
+    private void askForLoginOrRegister() {
+        String[] options = new String[]{"Login", "Register"};
+        int response = JOptionPane.showOptionDialog(null, "Hello in BattleShips, to start choose option:", "BattleShips",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, options, options[0]);
+
+        if (response == 0) {
+            askForLoginAndPassword();
+        } else {
+            registerUser();
+        }
+    }
+
+    private void registerUser() {
+        String message = "Please choose a nickname.";
+        while (true) {
+            JTextField name = new JTextField();
+            JTextField password = new JPasswordField();
+            JTextField confirmPassword = new JPasswordField();
+            Object[] mes = {
+                    message,
+                    "Username:", name,
+                    "Password:", password,
+                    "Confirm Password:", confirmPassword
+            };
+
+            int option = JOptionPane.showConfirmDialog(null, mes, "Register", JOptionPane.OK_CANCEL_OPTION);
+
+            if (name == null || password == null || option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
+                System.exit(-1);
+            }
+
+            if (password.equals(confirmPassword)) {
+                this.matchRoom.sendRegistration(name.getText(), password.getText());
+                synchronized (matchRoom) {
+                    try {
+                        if (matchRoom.getNameState() == MatchRoom.NameState.WAITING) {
+                            matchRoom.wait();
+                        }
+                    } catch (InterruptedException e) {
+                            e.printStackTrace();
+                    }
+                }
+                MatchRoom.NameState state = matchRoom.getNameState();
+                if (state == MatchRoom.NameState.ACCEPTED) {
+                    matchRoom.setOwnName(name.getText());
+                    break;
+                } else if (state == MatchRoom.NameState.INVALID) {
+                    message = "You must choose a valid nickname.";
+                } else if (state == MatchRoom.NameState.TAKEN) {
+                     message = "This nickname already exists, please try again.";
+                }
+            }
+        }
+    }
+
+    private void askForLoginAndPassword() {
         String message = "Please choose a nickname.";
         while (true) {
             JTextField name = new JTextField();
             JTextField password = new JPasswordField();
             Object[] mes = {
+                    message,
                     "Username:", name,
                     "Password:", password
             };
@@ -107,7 +164,7 @@ public class MatchRoomView extends JFrame {
             if (name == null || password == null || option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
                 System.exit(-1);
             }
-            this.matchRoom.sendName(name.getText() , password.getText());
+            this.matchRoom.sendLogin(name.getText(), password.getText());
             synchronized (matchRoom) {
                 try {
                     if (matchRoom.getNameState() == MatchRoom.NameState.WAITING) {
