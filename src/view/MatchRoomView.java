@@ -148,6 +148,8 @@ public class MatchRoomView extends JFrame {
         }
     }
 
+
+
     private void askForLoginAndPassword() {
         String message = "Please choose a nickname.";
         while (true) {
@@ -170,7 +172,7 @@ public class MatchRoomView extends JFrame {
                     if (matchRoom.getNameState() == MatchRoom.NameState.WAITING) {
                         matchRoom.wait();
                     }
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -179,9 +181,9 @@ public class MatchRoomView extends JFrame {
                 matchRoom.setOwnName(name.getText());
                 break;
             } else if (state == MatchRoom.NameState.INVALID) {
-                message = "You must choose a valid nickname.";
+                message = "You must choose a valid login.";
             } else if (state == MatchRoom.NameState.TAKEN) {
-                message = "This nickname already exists, please try again.";
+                message = "This login already exists, please try again.";
             }
         }
     }
