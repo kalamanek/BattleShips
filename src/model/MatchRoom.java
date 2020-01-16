@@ -133,7 +133,7 @@ public class MatchRoom extends Thread {
      */
     public void sendName(String name, String password) {
         this.nameState = NameState.WAITING;
-        sendStringArray(new String[]{"name", name, password});
+        sendStringArray(new String[]{"login", name, password});
     }
 
 
@@ -150,7 +150,7 @@ public class MatchRoom extends Thread {
      * means the name has been accepted by the server, INVALID means the name
      * was not a valid name, TAKEN means another player already has the name.
      */
-    public static enum NameState {
+    public enum NameState {
         WAITING, ACCEPTED, INVALID, TAKEN
     }
 
@@ -198,7 +198,8 @@ public class MatchRoom extends Thread {
                 case NotificationMessage.NAME_TAKEN:
                     setNameState(NameState.TAKEN);
                     break;
-                case NotificationMessage.INVALID_NAME:
+                case NotificationMessage.INVALID_LOGIN_NAME:
+                case NotificationMessage.PASSWORD_IS_INVALID:
                     setNameState(NameState.INVALID);
                     break;
                 case NotificationMessage.NEW_JOIN_GAME_REQUEST:

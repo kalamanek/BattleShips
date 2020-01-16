@@ -21,9 +21,10 @@ public class NotificationMessage implements Serializable {
     public final static int OPPONENT_DISCONNECTED = 206;
 
     public final static int OPPONENTS_NAME = 301;
-    public final static int INVALID_NAME = 302;
+    public final static int PASSWORD_IS_INVALID = 302;
     public final static int NAME_TAKEN = 303;
     public final static int NAME_ACCEPTED = 304;
+    public final static int INVALID_LOGIN_NAME = 305;
 
     public final static int GAME_TOKEN = 401;
     public final static int GAME_NOT_FOUND = 402;

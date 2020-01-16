@@ -50,6 +50,7 @@ public class MatchRoomView extends JFrame {
             }
         });
 
+
         playersList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -69,7 +70,7 @@ public class MatchRoomView extends JFrame {
         pack();
 
         this.matchRoom = new MatchRoom(this);
-        askForLogin();
+        askForName();
         matchRoom.joinLobby();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,7 +92,7 @@ public class MatchRoomView extends JFrame {
 
     }
 
-    private void askForLogin() {
+    private void askForName() {
         String message = "Please choose a nickname.";
         while (true) {
             JTextField name = new JTextField();
@@ -103,10 +104,10 @@ public class MatchRoomView extends JFrame {
 
             int option = JOptionPane.showConfirmDialog(null, mes, "Login", JOptionPane.OK_CANCEL_OPTION);
 
-            if (name == null) {
+            if (name == null || password == null || option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
                 System.exit(-1);
             }
-            this.matchRoom.sendName(name.getText(), password.getText());
+            this.matchRoom.sendName(name.getText() , password.getText());
             synchronized (matchRoom) {
                 try {
                     if (matchRoom.getNameState() == MatchRoom.NameState.WAITING) {
@@ -146,7 +147,7 @@ public class MatchRoomView extends JFrame {
             String key = entry.getKey();
             if (!key.equals(matchRoom.getKey())) {
                 String name = entry.getValue();
-                RoomPlayer player = new RoomPlayer(key, name, "");
+                RoomPlayer player = new RoomPlayer(key, name);
                 this.playersListModel.addElement(player);
             }
         }
@@ -164,12 +165,10 @@ public class MatchRoomView extends JFrame {
 
         private String key;
         private String name;
-        private String password;
 
-        public RoomPlayer(String key, String name, String password) {
+        public RoomPlayer(String key, String name) {
             this.key = key;
             this.name = name;
-            this.password = password;
         }
 
         public String toString() {
@@ -184,9 +183,6 @@ public class MatchRoomView extends JFrame {
             return this.name;
         }
 
-        public String getPassword() {
-            return password;
-        }
     }
 
     public void showConfigFileError() {
@@ -203,7 +199,7 @@ public class MatchRoomView extends JFrame {
     public int showInitialConnectionError() {
         String message = "Could not connect to server, did you set the " +
                 "correct hostname and port in config.properties?";
-        String options[] = {"Quit", "Retry"};
+        String[] options = {"Quit", "Retry"};
         return JOptionPane.showOptionDialog(this, message,
                 "Could not connect to server", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.ERROR_MESSAGE, null, options, options[1]);

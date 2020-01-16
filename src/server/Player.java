@@ -19,13 +19,14 @@ public class Player extends Thread {
 
     private Socket socket;
     private MatchRoom matchRoom;
-    private String name = "";
+    private String login = "";
     private ObjectOutputStream out;
     private Game game;
     private Board board;
     private HashMap<String, Player> requestList;
     private String ownKey;
     private String requestedGameKey;
+
 
     /**
      * Constructs a player with a socket to connect through, and a reference
@@ -62,27 +63,38 @@ public class Player extends Thread {
             while ((input = in.readObject()) != null) {
                 if (input instanceof String[]) {
                     String[] array = (String[]) input;
+                    for(String a : array )
+                        System.out.println(a);
+
                     int length = array.length;
 
                     if (length > 0) {
                         String message = array[0];
 
                         switch (message) {
-                        case "join":
-                            matchRoom.parse(this, array);
-                            break;
-                        case "name":
-                            if (length != 2 || array[1] == null ||
-                                    array[1].equals("")) {
-                                writeNotification(NotificationMessage.INVALID_NAME);
-                            } else if (matchRoom.playerNameExists(array[1])) {
-                                writeNotification(NotificationMessage.NAME_TAKEN);
-                            } else {
-                                name = array[1];
-                                writeNotification(NotificationMessage.NAME_ACCEPTED);
-                                matchRoom.sendMatchRoomList();
-                            }
-                            break;
+                            case "join":
+                                matchRoom.parse(this, array);
+                                break;
+                            case "login":
+                                if (length != 3 || array[1] == null ||
+                                        array[1].equals("")) {
+                                    writeNotification(NotificationMessage.INVALID_LOGIN_NAME);
+                                } else if (matchRoom.playerNameExists(array[1])) {
+                                    writeNotification(NotificationMessage.NAME_TAKEN);
+                                }else if(array[2] == null ||
+                                        array[2].equals("")){
+                                    writeNotification(NotificationMessage.PASSWORD_IS_INVALID);
+
+                                }else {
+                                    if(Server.checkUser(array[1],array[2])) {
+                                        login = array[1];
+                                        writeNotification(NotificationMessage.NAME_ACCEPTED);
+                                        matchRoom.sendMatchRoomList();
+                                    }else{
+                                        writeNotification(NotificationMessage.PASSWORD_IS_INVALID);
+                                    }
+                                }
+                                break;
                         }
                     }
                 } else if (input instanceof Board) {
@@ -117,7 +129,7 @@ public class Player extends Thread {
             }
             matchRoom.removePlayer(this);
             System.out.println(socket.getRemoteSocketAddress().toString() +
-                    " connected");
+                    " something");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -138,7 +150,7 @@ public class Player extends Thread {
      * @return the name of the player
      */
     public String getPlayerName() {
-        return name;
+        return login;
     }
 
     /**
