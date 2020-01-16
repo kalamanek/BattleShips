@@ -27,7 +27,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        users = new HashMap<String, String>();
+        users = new HashMap<>();
         users.put("a","a");
         users.put("b","b");
         users.put("c","c");
@@ -44,6 +44,20 @@ public class Server {
             return users.get(login).equals(password);
         else
             return false;
+    }
+
+    public static boolean userExist(String login){
+        return users.containsKey(login);
+    }
+
+    public static void addUser(String login , String user){
+        synchronized(users) {
+            try {
+                users.put(login, user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

@@ -95,6 +95,18 @@ public class Player extends Thread {
                                     }
                                 }
                                 break;
+                            case "register":
+                                if (length != 3 || array[1] == null ||
+                                        array[1].equals("")) {
+                                    writeNotification(NotificationMessage.INVALID_LOGIN_NAME);
+                                }else if (Server.userExist(array[1])) {
+                                    writeNotification(NotificationMessage.NAME_TAKEN);
+                                }else{
+                                    Server.addUser(array[1],array[2]);
+                                    login = array[1];
+                                    writeNotification(NotificationMessage.NAME_ACCEPTED);
+                                    matchRoom.sendMatchRoomList();
+                                }
                         }
                     }
                 } else if (input instanceof Board) {
