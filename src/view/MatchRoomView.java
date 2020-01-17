@@ -100,8 +100,10 @@ public class MatchRoomView extends JFrame {
 
         if (response == 0) {
             askForLoginAndPassword();
-        } else {
+        } else if(response == 1){
             registerUser();
+        }else{
+            System.exit(-1);
         }
     }
 
