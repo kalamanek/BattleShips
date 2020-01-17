@@ -139,6 +139,7 @@ public class Client extends Thread {
                 break;
             case NotificationMessage.OPPONENT_DISCONNECTED:
                 view.addChatMessage("Opponent disconnected.");
+                view.gameOverAction("You won!");
             }
         } else if (input instanceof MoveResponseMessage) {
             MoveResponseMessage move = (MoveResponseMessage) input;

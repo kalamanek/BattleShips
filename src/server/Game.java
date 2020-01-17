@@ -49,6 +49,14 @@ public class Game {
         }
         return player1;
     }
+    public void cancelTimers(){
+        if (turnTimer != null) {
+            turnTimer.cancel();
+        }
+        if (placementTimer != null) {
+            placementTimer.cancel();
+        }
+    }
 
     public void killGame() {
         player1.setGame(null);

@@ -27,7 +27,7 @@ public class Player extends Thread {
     private String requestedGameKey;
     private Timer inactivityTimer;
 
-    public final static int INACTIVITY_TIMEOUT = 600000;
+    public final static int INACTIVITY_TIMEOUT = 10000;
 
     public Player(Socket socket, MatchRoom matchRoom) {
         this.socket = socket;
@@ -126,7 +126,6 @@ public class Player extends Thread {
                     }
                 }
             }
-            this.refreshInavtivityTimer();
         } catch (java.net.SocketException e) {
             if (game != null) {
                 leaveGame();
@@ -136,7 +135,6 @@ public class Player extends Thread {
             matchRoom.removePlayer(this);
             System.out.println(socket.getRemoteSocketAddress().toString() +
                     " socket closed");
-            Player.this.destroySelf();
         } catch (Exception e){
             e.printStackTrace();
             if (game != null) {
@@ -145,7 +143,6 @@ public class Player extends Thread {
                 matchRoom.removeWaitingPlayer(this);
             }
             matchRoom.removePlayer(this);
-            Player.this.destroySelf();
         }
     }
 
@@ -158,17 +155,19 @@ public class Player extends Thread {
         inactivityTimer.schedule(new Player.InactivityTimerTask(), INACTIVITY_TIMEOUT);
     }
 
-    private void destroySelf(){
+    private synchronized void destroySelf(){
+
+        if (inactivityTimer != null) {
+            inactivityTimer.cancel();
+        }
         try {
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if (inactivityTimer != null) {
-            inactivityTimer.cancel();
+        if(game!=null) {
+            game.cancelTimers();
         }
-
         System.out.println("for Inactivity destroying " + this.login + " session on thread " + Thread.currentThread().getId());
         Thread.currentThread().interrupt();
         return;
@@ -254,7 +253,6 @@ public class Player extends Thread {
         for (Player p : requestList.values()) {
             p.requestRejected(this);
         }
-        this.refreshInavtivityTimer();
     }
     public void leaveGame() {
         if (game != null) {
@@ -262,16 +260,14 @@ public class Player extends Thread {
             opponent.writeNotification(NotificationMessage.OPPONENT_DISCONNECTED);
             game.killGame();
         }
-        this.refreshInavtivityTimer();
     }
 
     private class InactivityTimerTask extends TimerTask {
 
         @Override
         public void run() {
-            if(socket.isConnected()) {
-                Player.this.writeNotification(NotificationMessage.PLAYER_INACIVITY);
-            }
+            Player.this.writeNotification(NotificationMessage.PLAYER_INACIVITY);
+
             Player.this.destroySelf();
         }
 
