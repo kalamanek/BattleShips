@@ -33,23 +33,33 @@ public class Server {
     }
 
     public static boolean checkUser(String login, String password)  {
-        if(users.containsKey(login))
-            return users.get(login).equals(password);
-        else
-            return false;
+        synchronized(users) {
+            if (users.containsKey(login))
+                return users.get(login).equals(password);
+            else
+                return false;
+        }
     }
 
     public static boolean userExist(String login){
-        return users.containsKey(login);
+        synchronized(users) {
+            return users.containsKey(login);
+        }
     }
 
-    public static void addUser(String login , String user){
+    public static boolean addUser(String login , String user){
         synchronized(users) {
+            if(userExist(login))
+                return false;
+
             try {
                 users.put(login, user);
             } catch (Exception e) {
                 e.printStackTrace();
+                return false;
             }
+
+            return true;
         }
     }
 
