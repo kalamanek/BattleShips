@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,6 +25,9 @@ public class Player extends Thread {
     private HashMap<String, Player> requestList;
     private String ownKey;
     private String requestedGameKey;
+    private Timer inactivityTimer;
+
+    public final static int INACTIVITY_TIMEOUT = 600000;
 
     public Player(Socket socket, MatchRoom matchRoom) {
         this.socket = socket;
@@ -134,6 +136,35 @@ public class Player extends Thread {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        this.refreshInavtivityTimer();
+    }
+
+    private void refreshInavtivityTimer(){
+
+        if (inactivityTimer != null) {
+            inactivityTimer.cancel();
+        }
+        inactivityTimer = new Timer();
+        inactivityTimer.schedule(new Player.InactivityTimerTask(), INACTIVITY_TIMEOUT);
+    }
+
+    private void destroySelf(){
+        try {
+            socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Thread.currentThread().interrupt();
+    }
+
+    private class InactivityTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+            Player.this.writeNotification(NotificationMessage.PLAYER_INACIVITY);
+            Player.this.destroySelf();
+        }
+
     }
 
     public void setGame(Game game) {
@@ -151,6 +182,7 @@ public class Player extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.refreshInavtivityTimer();
     }
 
     public void writeObject(Object object) {
@@ -160,6 +192,7 @@ public class Player extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.refreshInavtivityTimer();
     }
 
     public void writeNotification(int notificationMessage, String... text) {
@@ -171,6 +204,7 @@ public class Player extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.refreshInavtivityTimer();
     }
 
     public Board getBoard() {
@@ -182,18 +216,21 @@ public class Player extends Thread {
         requester.requestedGameKey = this.ownKey;
         writeNotification(NotificationMessage.NEW_JOIN_GAME_REQUEST,
                 requester.getOwnKey(), requester.getPlayerName());
+        this.refreshInavtivityTimer();
     }
 
     public synchronized void requestAccepted(Player opponent) {
         opponent.requestList.remove(ownKey);
         requestedGameKey = null;
         writeNotification(NotificationMessage.JOIN_GAME_REQUEST_ACCEPTED);
+        this.refreshInavtivityTimer();
     }
 
     public synchronized void requestRejected(Player opponent) {
         opponent.requestList.remove(ownKey);
         requestedGameKey = null;
         writeNotification(NotificationMessage.JOIN_GAME_REQUEST_REJECTED);
+        this.refreshInavtivityTimer();
     }
 
     public void setOwnKey(String ownKey) {
@@ -216,14 +253,15 @@ public class Player extends Thread {
         for (Player p : requestList.values()) {
             p.requestRejected(this);
         }
+        this.refreshInavtivityTimer();
     }
-
     public void leaveGame() {
         if (game != null) {
             Player opponent = game.getOpponent(this);
             opponent.writeNotification(NotificationMessage.OPPONENT_DISCONNECTED);
             game.killGame();
         }
+        this.refreshInavtivityTimer();
     }
 
 }

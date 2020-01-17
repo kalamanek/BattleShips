@@ -37,6 +37,7 @@ public class NotificationMessage implements Serializable {
     public final static int JOIN_GAME_REQUEST_REJECTED = 702;
     public final static int JOIN_GAME_REQUEST_ACCEPTED = 703;
     public final static int JOIN_GAME_REQUEST_CANCELLED = 704;
+    public final static int PLAYER_INACIVITY = 705;
 
     private int code;
     private String[] text;
