@@ -124,7 +124,8 @@ public class Player extends Thread {
                     }
                 }
             }
-        } catch (IOException e) {
+            this.refreshInavtivityTimer();
+        } catch (java.net.SocketException e) {
             if (game != null) {
                 leaveGame();
             } else {
@@ -132,14 +133,21 @@ public class Player extends Thread {
             }
             matchRoom.removePlayer(this);
             System.out.println(socket.getRemoteSocketAddress().toString() +
-                    " something");
+                    " socket closed");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+            if (game != null) {
+                leaveGame();
+            } else {
+                matchRoom.removeWaitingPlayer(this);
+            }
+            matchRoom.removePlayer(this);
         }
-        this.refreshInavtivityTimer();
     }
 
-    private void refreshInavtivityTimer(){
+    private synchronized void refreshInavtivityTimer(){
 
         if (inactivityTimer != null) {
             inactivityTimer.cancel();
@@ -154,17 +162,14 @@ public class Player extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Thread.currentThread().interrupt();
-    }
 
-    private class InactivityTimerTask extends TimerTask {
-
-        @Override
-        public void run() {
-            Player.this.writeNotification(NotificationMessage.PLAYER_INACIVITY);
-            Player.this.destroySelf();
+        if (inactivityTimer != null) {
+            inactivityTimer.cancel();
         }
 
+        System.out.println("for Inactivity destroying " + this.login + " session on thread " + Thread.currentThread().getId());
+        Thread.currentThread().interrupt();
+        return;
     }
 
     public void setGame(Game game) {
@@ -262,6 +267,16 @@ public class Player extends Thread {
             game.killGame();
         }
         this.refreshInavtivityTimer();
+    }
+
+    private class InactivityTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+            Player.this.writeNotification(NotificationMessage.PLAYER_INACIVITY);
+            Player.this.destroySelf();
+        }
+
     }
 
 }
