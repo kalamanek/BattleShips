@@ -7,9 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
-/**
- * Created by user on 13.10.2014.
- */
 public class ShipView {
     private final int initialX;
     private final int initialY;

@@ -13,9 +13,6 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Class for view of the board.
- */
 public class BoardView extends JPanel implements PropertyChangeListener {
 
     public static int SQUARE_WIDTH = 35;
@@ -28,11 +25,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
     private int yDistance;
     private Board model;
 
-    /**
-     * Constructs BoardView.
-     * @param ownBoard if true, then the board is own and ships will be added under the board for placing.
-     *                 Otherwise, ships are not added.
-     */
     public BoardView(boolean ownBoard) {
         this.model = new Board(ownBoard);
         model.addPropertyChangeListener(this);
@@ -89,9 +81,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         });
     }
 
-    /**
-     * Resets selected ship.
-     */
     public void resetSelectedShipView() {
         if (selectedShipView != null) {
             selectedShipView.setSelected(false);
@@ -100,18 +89,10 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         repaint();
     }
 
-    /**
-     * Returns ship model.
-     * @return ship model.
-     */
     public Board getModel() {
         return model;
     }
 
-    /**
-     * Sets selected ship.
-     * @param e mouse event is used to get coordinates of the ship.
-     */
     private void setSelectedShipView(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
@@ -131,9 +112,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         updateRotateButtonState();
     }
 
-    /**
-     * Moves selected ship.
-     */
     private void moveSelectedShip() {
         final int x = selectedShipView.getX() + SQUARE_WIDTH / 2;
         final int y = selectedShipView.getY() + SQUARE_WIDTH / 2;
@@ -169,13 +147,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Finds ship at specified coordinates (where mouse was clicked).
-     *
-     * @param x x coordinate.
-     * @param y y coordinate.
-     * @return ShipView at given x and y.
-     */
     private ShipView getShip(int x, int y) {
         for (ShipView shipView : shipViews) {
             if (shipView.has(x, y)) {
@@ -193,24 +164,12 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         return new int[]{x / SQUARE_WIDTH, y / SQUARE_WIDTH};
     }
 
-    /**
-     * Gets square at specified coordinates (where mouse was clicked).
-     *
-     * @param x x coordinate.
-     * @param y y coordinate.
-     * @return SquareView at given x and y.
-     */
     private SquareView getSquare(int x, int y) {
         int i = x / SQUARE_WIDTH;
         int j = y / SQUARE_WIDTH;
         return i >= 0 && j >= 0 && i < 10 && j < 10 ? squareViews[i][j] : null;
     }
 
-    /**
-     * Updates selected ship.
-     *
-     * @param e mouse event.
-     */
     private void updateSelectedShip(MouseEvent e) {
         ShipView selectedShipView = getSelectedShip();
         if (selectedShipView != null) {
@@ -219,11 +178,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Sets hovered square on mouse hover event.
-     *
-     * @param e mouse event.
-     */
     private void setHoveredSquare(MouseEvent e) {
         if (model.isOwnBoard()) {
             return;
@@ -236,9 +190,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Resets hovered square.
-     */
     private void resetHoveredSquare() {
         if (hoveredSquare != null && hoveredSquare.getState() == SquareView.HOVER
                 && !model.isOwnBoard()) {
@@ -256,9 +207,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         shipViews.add(shipView);
     }
 
-    /**
-     * Initializes board's squares.
-     */
     private void addSquares() {
         squareViews = new SquareView[BOARD_SIZE][BOARD_SIZE];
 
@@ -273,9 +221,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Adds ships to the board.
-     */
     private void addShips() {
         int x = 0;
         int y = SQUARE_WIDTH * BOARD_SIZE + 5;
@@ -295,20 +240,12 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Rotates selected ship.
-     */
     private void rotateSelectedShip() {
         selectedShipView.rotate();
         repaint();
         moveSelectedShip();
     }
 
-    /**
-     * Paints BoardView.
-     *
-     * @param g Graphics.
-     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

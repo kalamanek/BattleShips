@@ -15,9 +15,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-/**
- * Created by alexstoick on 10/15/14.
- */
 public class ClientView extends JFrame {
 
     private JTextField inputField = new JTextField();

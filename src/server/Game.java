@@ -20,19 +20,11 @@ public class Game {
     private Timer placementTimer;
     private Timer turnTimer;
 
-    public final static int TURN_TIMEOUT = 20000;
-    public final static int PLACEMENT_TIMEOUT = 60000;
+    public final static int TURN_TIMEOUT = 40000;
+    public final static int PLACEMENT_TIMEOUT = 100000;
 
     private boolean gameStarted;
 
-    /**
-     * Constructs a Game between two players, and informs the players of the
-     * name of their opponent. A timer is started, which the ships are to be
-     * placed by the end of.
-     *
-     * @param player1 a player
-     * @param player2 another player
-     */
     public Game(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
@@ -51,12 +43,6 @@ public class Game {
         placementTimer.schedule(new PlacementTimerTask(), PLACEMENT_TIMEOUT);
     }
 
-    /**
-     * Returns the other player in the game who is not the specified player.
-     *
-     * @param self the specified player
-     * @return the player playing the specified player
-     */
     public Player getOpponent(Player self) {
         if (player1 == self) {
             return player2;
@@ -64,19 +50,11 @@ public class Game {
         return player1;
     }
 
-    /**
-     * Sets the game in both players to null.
-     */
     public void killGame() {
         player1.setGame(null);
         player2.setGame(null);
     }
 
-    /**
-     * Sets the turn to the specified player's.
-     *
-     * @param player the player who's turn it becomes
-     */
     public synchronized void setTurn(Player player) {
         turn = player;
         if (turnTimer != null) {
@@ -88,10 +66,6 @@ public class Game {
         getOpponent(turn).writeNotification(NotificationMessage.OPPONENTS_TURN);
     }
 
-    /**
-     * Checks if both players have set valid boards. If they have, the game is
-     * started.
-     */
     public void checkBoards() {
         if (player1.getBoard() != null && player2.getBoard() != null) {
             placementTimer.cancel();
@@ -99,9 +73,6 @@ public class Game {
         }
     }
 
-    /**
-     * Starts the game and sets the turn to a random player's.
-     */
     private void startGame() {
         gameStarted = true;
         if (new Random().nextInt(2) == 0) {
@@ -111,15 +82,6 @@ public class Game {
         }
     }
 
-    /**
-     * Applies a move a player has sent. Responds to the move with either
-     * a NotificationMessage stating an error, or a MoveResponseMessage.
-     *
-     * @see server.messages.NotificationMessage
-     * @see server.messages.MoveResponseMessage
-     * @param move the move sent by the player
-     * @param player the player who sent the move
-     */
     public synchronized void applyMove(MoveMessage move, Player player) {
         if (player != turn) {
             player.writeNotification(NotificationMessage.NOT_YOUR_TURN);

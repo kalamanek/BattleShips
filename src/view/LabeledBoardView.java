@@ -3,9 +3,6 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by user on 6-Nov-14.
- */
 public class LabeledBoardView extends JPanel {
 
     public LabeledBoardView(BoardView boardView) {

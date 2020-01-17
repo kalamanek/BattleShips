@@ -9,9 +9,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.io.File;
 
-/**
- * Created by user on 13.10.2014.
- */
 public class SquareView implements ChangeListener {
 
     public static final int CLEAR = 0;

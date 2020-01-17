@@ -8,9 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * Created by user on 13.10.2014.
- */
 public class ExplosionAnimation {
 
     private SquareView cell;
