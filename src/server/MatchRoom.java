@@ -3,14 +3,13 @@ package server;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.UUID;
 
 import server.messages.MatchRoomListMessage;
 import server.messages.NotificationMessage;
 
 public class MatchRoom {
 
-    private final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
     private HashMap<String, Player> waitingPlayerList;
     private ArrayList<Player> connectedPlayers;
 
@@ -61,14 +60,7 @@ public class MatchRoom {
     }
 
     public synchronized void assignKey(Player player) {
-        StringBuilder keyBuilder = new StringBuilder();
-        Random random = new Random();
-        int length = ALPHABET.length();
-        for (int i = 0; i < 10; ++i) {
-            keyBuilder.append(ALPHABET.charAt(random.nextInt(length)));
-        }
-        String key = keyBuilder.toString();
-        player.setOwnKey(key);
+        player.setOwnKey(UUID.randomUUID().toString());
     }
 
     private synchronized void joinRequest(Player player, String key) {
