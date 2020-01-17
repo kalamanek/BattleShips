@@ -22,7 +22,6 @@ public class Board implements Serializable {
         this.ownBoard = ownBoard;
         squares = new Square[BOARD_DIMENSION][BOARD_DIMENSION];
 
-        // populates the squares array
         for (int i = 0; i < BOARD_DIMENSION; i++) {
             for (int j = 0; j < BOARD_DIMENSION; j++) {
                 squares[i][j] = new Square(i, j, ownBoard);
@@ -33,8 +32,8 @@ public class Board implements Serializable {
         ships.add(new Ship(Ship.Type.AIRCRAFT_CARRIER));
         ships.add(new Ship(Ship.Type.BATTLESHIP));
         ships.add(new Ship(Ship.Type.BATTLESHIP));
-        ships.add(new Ship(Ship.Type.PATROL_BOAT));
         ships.add(new Ship(Ship.Type.BATTLESHIP));
+        ships.add(new Ship(Ship.Type.PATROL_BOAT));
 
         this.changeListeners = new ArrayList<>();
     }
@@ -74,7 +73,6 @@ public class Board implements Serializable {
     }
 
     public boolean placeShip(Ship ship, int x, int y) {
-        // checks if it is within the board
         int end = (ship.isVertical()) ? y + ship.getLength() - 1 : x
                 + ship.getLength() - 1;
         if (x < 0 || y < 0 || end >= BOARD_DIMENSION) {
@@ -92,7 +90,6 @@ public class Board implements Serializable {
             }
         }
 
-        // puts ship on squares
         for (int i = 0; i < ship.getLength(); i++) {
             if (ship.isVertical()) {
                 squares[x][y + i].setShip(ship);
@@ -140,12 +137,6 @@ public class Board implements Serializable {
                     case BATTLESHIP:
                         c = 'B';
                         break;
-                    case SUBMARINE:
-                        c = 'S';
-                        break;
-                    case DESTROYER:
-                        c = 'D';
-                        break;
                     case PATROL_BOAT:
                         c = 'P';
                     }
@@ -174,7 +165,7 @@ public class Board implements Serializable {
                         shipSquare.getY());
                 boardSquare.update(true, ship);
             }
-            // TODO: Fix me
+            //TODO
             client.getView().addChatMessage("SUNK SHIP" + ship.toString());
         } else {
             Square square = getSquare(move.getX(), move.getY());
@@ -220,7 +211,6 @@ public class Board implements Serializable {
         return false;
     }
 
-    // checks if x and y are between 0 and 9 inclusive
     private boolean isCoordWithinBounds(int x, int y) {
         return (x >= 0 && x < 10 && y >= 0 && y < 10);
     }
