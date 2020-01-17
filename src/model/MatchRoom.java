@@ -59,7 +59,7 @@ public class MatchRoom extends Thread {
 
         inviteDialogs = new HashMap<>();
 
-        start();
+        this.start();
     }
 
     @Override

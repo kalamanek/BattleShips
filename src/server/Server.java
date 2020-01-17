@@ -26,6 +26,7 @@ public class Server {
         users.put("a","a");
         users.put("b","b");
         users.put("c","c");
+        users.put("q","q");
 
         int port = 8900;
 

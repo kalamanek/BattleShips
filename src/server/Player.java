@@ -52,6 +52,8 @@ public class Player extends Thread {
             Object input;
 
             while ((input = in.readObject()) != null) {
+                this.refreshInavtivityTimer();
+
                 if (input instanceof String[]) {
                     String[] array = (String[]) input;
                     for(String a : array )
@@ -134,8 +136,7 @@ public class Player extends Thread {
             matchRoom.removePlayer(this);
             System.out.println(socket.getRemoteSocketAddress().toString() +
                     " socket closed");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Player.this.destroySelf();
         } catch (Exception e){
             e.printStackTrace();
             if (game != null) {
@@ -144,6 +145,7 @@ public class Player extends Thread {
                 matchRoom.removeWaitingPlayer(this);
             }
             matchRoom.removePlayer(this);
+            Player.this.destroySelf();
         }
     }
 
@@ -187,7 +189,6 @@ public class Player extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.refreshInavtivityTimer();
     }
 
     public void writeObject(Object object) {
@@ -197,7 +198,6 @@ public class Player extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.refreshInavtivityTimer();
     }
 
     public void writeNotification(int notificationMessage, String... text) {
@@ -209,7 +209,6 @@ public class Player extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.refreshInavtivityTimer();
     }
 
     public Board getBoard() {
@@ -221,21 +220,18 @@ public class Player extends Thread {
         requester.requestedGameKey = this.ownKey;
         writeNotification(NotificationMessage.NEW_JOIN_GAME_REQUEST,
                 requester.getOwnKey(), requester.getPlayerName());
-        this.refreshInavtivityTimer();
     }
 
     public synchronized void requestAccepted(Player opponent) {
         opponent.requestList.remove(ownKey);
         requestedGameKey = null;
         writeNotification(NotificationMessage.JOIN_GAME_REQUEST_ACCEPTED);
-        this.refreshInavtivityTimer();
     }
 
     public synchronized void requestRejected(Player opponent) {
         opponent.requestList.remove(ownKey);
         requestedGameKey = null;
         writeNotification(NotificationMessage.JOIN_GAME_REQUEST_REJECTED);
-        this.refreshInavtivityTimer();
     }
 
     public void setOwnKey(String ownKey) {
@@ -273,7 +269,9 @@ public class Player extends Thread {
 
         @Override
         public void run() {
-            Player.this.writeNotification(NotificationMessage.PLAYER_INACIVITY);
+            if(socket.isConnected()) {
+                Player.this.writeNotification(NotificationMessage.PLAYER_INACIVITY);
+            }
             Player.this.destroySelf();
         }
 

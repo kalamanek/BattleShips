@@ -18,7 +18,6 @@ public class MatchRoomView extends JFrame {
 
     private DefaultListModel<RoomPlayer> playersListModel = new DefaultListModel<RoomPlayer>();
     private MatchRoom matchRoom;
-    private boolean firstTimeListing = true;
     private HashMap<String, String> matchRoomList;
     private JList<RoomPlayer> playersList;
     private JButton sendInvite;
