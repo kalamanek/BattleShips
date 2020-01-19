@@ -7,6 +7,7 @@ public class NotificationMessage implements Serializable {
     public final static int PLACE_SHIPS = 101;
     public final static int YOUR_TURN = 102;
     public final static int OPPONENTS_TURN = 103;
+    public final static int FRIEND_OPPONENTS = 104;
 
     public final static int GAME_WIN = 201;
     public final static int GAME_LOSE = 202;

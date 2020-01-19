@@ -1,10 +1,7 @@
 package model;
 
 import server.Game;
-import server.messages.ChatMessage;
-import server.messages.MoveMessage;
-import server.messages.MoveResponseMessage;
-import server.messages.NotificationMessage;
+import server.messages.*;
 import view.ClientView;
 
 import java.io.BufferedOutputStream;
@@ -64,6 +61,14 @@ public class Client extends Thread {
                     opponentName = n.getText()[0];
                     view.setTitle("Playing Battleships against " +
                             opponentName);
+                }
+                break;
+            case NotificationMessage.FRIEND_OPPONENTS:
+                if (n.getText().length == 1) {
+                    opponentName = n.getText()[0];
+                    view.setTitle("Watching friends game in Battleships against " +
+                            opponentName);
+                    getBoards();
                 }
                 break;
             case NotificationMessage.BOARD_ACCEPTED:
@@ -151,9 +156,10 @@ public class Client extends Thread {
         } else if (input instanceof ChatMessage) {
             ChatMessage chatMessage = (ChatMessage) input;
             view.addChatMessage("<b>" + opponentName + ":</b> " + chatMessage.getMessage());
-        }else if (input instanceof Board){
-            Board board = (Board) input;
-            board.printBoard(true);
+        }else if (input instanceof BoardMessage){
+            BoardMessage boards = (BoardMessage) input;
+            boards.getEnemyBoard().printBoard(true);
+            boards.getFriendBoard().printBoard(true);
         }
 
 
@@ -163,6 +169,9 @@ public class Client extends Thread {
         out.reset();
         out.writeObject(board);
         out.flush();
+    }
+    public void getBoards(){
+
     }
 
     public ClientView getView() {

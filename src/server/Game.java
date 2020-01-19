@@ -3,10 +3,12 @@ package server;
 import model.Board;
 import model.Ship;
 import model.Square;
+import server.messages.BoardMessage;
 import server.messages.MoveMessage;
 import server.messages.MoveResponseMessage;
 import server.messages.NotificationMessage;
 
+import javax.management.Notification;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -185,21 +187,38 @@ public class Game {
             if (player.hashCode() == player1.hashCode()) {
                 if (!player1Watchers.contains(watcher)) {
                     player1Watchers.add(watcher);
-                    watcher.writeObject(player1.getBoard());
-                    watcher.writeObject(player2.getBoard());
+                    watcher.writeNotification(NotificationMessage.FRIEND_OPPONENTS , player2.getPlayerName());
                 }
             } else if (player.hashCode() == player2.hashCode()) {
                 if (!player2Watchers.contains(watcher)) {
                     player2Watchers.add(watcher);
-                    watcher.writeObject(player2.getBoard());
-                    watcher.writeObject(player1.getBoard());
+                    watcher.writeNotification(NotificationMessage.FRIEND_OPPONENTS , player1.getPlayerName());
                 }
             }
-            System.out.println("kurwa");
+        }
+    }
+    public synchronized void giveWatcherBoards(Player player, Player watcher) {
+        if(isPublic) {
+            if (player.hashCode() == player1.hashCode()) {
+                if (!player1Watchers.contains(watcher)) {
+                    BoardMessage message =  new BoardMessage(
+                            player2.getBoard() == null ? new Board(true) : player2.getBoard(),
+                            player1.getBoard() == null ? new Board(false) : player1.getBoard());
+                    watcher.writeObject(message);
+                }
+            } else if (player.hashCode() == player2.hashCode()) {
+                if (!player2Watchers.contains(watcher)) {
+                    BoardMessage message =  new BoardMessage(
+                            player1.getBoard() == null ? new Board(true) : player1.getBoard(),
+                            player2.getBoard() == null ? new Board(false) : player2.getBoard());
+                    watcher.writeObject(message);
+                }
+            }
         }
     }
 
-    public synchronized void removePlayerWatcher(Player player, Player watcher) {
+
+        public synchronized void removePlayerWatcher(Player player, Player watcher) {
         if(isPublic) {
             if (player.hashCode() == player1.hashCode()) {
                 player1Watchers.remove(watcher);

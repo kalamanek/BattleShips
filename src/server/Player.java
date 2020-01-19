@@ -214,6 +214,7 @@ public class Player extends Thread {
         }
     }
 
+
     public Board getBoard() {
         return this.board;
     }

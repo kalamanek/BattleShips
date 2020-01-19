@@ -83,7 +83,7 @@ public class MatchRoom {
         if (player == friend) {
             player.writeNotification(NotificationMessage.CANNOT_PLAY_YOURSELF);
         } else if (friend != null) {
-            System.out.println("prosba o ogladanie gry przez " + player.getPlayerName() + " gry gracza " + friend.getPlayerName());
+            System.out.println("Request to watch game " + player.getPlayerName() + " by player " + friend.getPlayerName());
             friend.addWatcher(player);
         }
     }
