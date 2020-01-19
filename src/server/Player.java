@@ -175,6 +175,8 @@ public class Player extends Thread {
         return;
     }
 
+    public boolean isInGame(){return this.game != null;}
+
     public void setGame(Game game) {
         this.game = game;
     }

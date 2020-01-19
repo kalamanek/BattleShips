@@ -76,8 +76,8 @@ public class MatchRoom {
         Player opponent = waitingPlayerList.get(key);
         if (opponent != null &&
                 opponent.getRequestedGameKey().equals(player.getOwnKey())) {
-            waitingPlayerList.remove(key);
-            waitingPlayerList.values().remove(player);
+            //waitingPlayerList.remove(key);
+            //waitingPlayerList.values().remove(player);
             opponent.requestAccepted(player);
             new Game(opponent, player);
             sendMatchRoomList();
@@ -123,12 +123,17 @@ public class MatchRoom {
         for (Map.Entry<String, Player> entry : waitingPlayerList.entrySet()) {
             String key = entry.getKey();
             Player player = entry.getValue();
-            matchRoomList.put(key, player.getPlayerName());
+            matchRoomList.put(key,
+                    player.isInGame() ?
+                            player.getPlayerName() + " (in game)":
+                            player.getPlayerName()
+                    );
         }
         MatchRoomListMessage message = new MatchRoomListMessage(matchRoomList);
         for (Map.Entry<String, Player> entry : waitingPlayerList.entrySet()) {
             Player player = entry.getValue();
-            player.writeObject(message);
+            if(!player.isInGame())
+                player.writeObject(message);
         }
     }
 
