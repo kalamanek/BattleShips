@@ -41,6 +41,12 @@ public class MatchRoom {
                 acceptRequest(player, args[2]);
             }
             break;
+        case "watch":
+            player.leaveGame();
+            if (args.length == 3) {
+                watchRequest(player, args[2]);
+            }
+            break;
         case "reject":
             if (args.length == 3) {
                 rejectRequest(player, args[2]);
@@ -72,6 +78,15 @@ public class MatchRoom {
         }
     }
 
+    private synchronized void watchRequest(Player player, String key) {
+        Player friend = waitingPlayerList.get(key);
+        if (player == friend) {
+            player.writeNotification(NotificationMessage.CANNOT_PLAY_YOURSELF);
+        } else if (friend != null) {
+            System.out.println("prosba o ogladanie gry przez " + player.getPlayerName() + " gry gracza " + friend.getPlayerName());
+            friend.addWatcher(player);
+        }
+    }
     private synchronized void acceptRequest(Player player, String key) {
         Player opponent = waitingPlayerList.get(key);
         if (opponent != null &&

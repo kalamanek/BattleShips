@@ -25,8 +25,8 @@ public class Server {
         users = new HashMap<>();
         users.put("a","a");
         users.put("b","b");
-        users.put("c","c");
         users.put("q","q");
+        users.put("w","w");
 
         int port = 8900;
 

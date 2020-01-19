@@ -276,5 +276,10 @@ public class Player extends Thread {
         }
 
     }
-
+    public void addWatcher(Player player){
+        game.addPlayerWatcher(this,player);
+    }
+    public void removeWatcher(Player player){
+        game.removePlayerWatcher(this,player);
+    }
 }

@@ -7,6 +7,7 @@ import server.messages.MoveMessage;
 import server.messages.MoveResponseMessage;
 import server.messages.NotificationMessage;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,8 +15,11 @@ import java.util.TimerTask;
 public class Game {
 
     private Player player1;
+    private ArrayList<Player>  player1Watchers;
     private Player player2;
+    private ArrayList<Player>  player2Watchers;
     private Player turn;
+    private Boolean isPublic = true;
 
     private Timer placementTimer;
     private Timer turnTimer;
@@ -26,6 +30,8 @@ public class Game {
     private boolean gameStarted;
 
     public Game(Player player1, Player player2) {
+        this.player1Watchers = new ArrayList<>();
+        this.player2Watchers = new ArrayList<>();
         this.player1 = player1;
         this.player2 = player2;
         player1.setGame(this);
@@ -116,8 +122,14 @@ public class Game {
                 response = new MoveResponseMessage(x, y, null, hit, false);
             }
             player.writeObject(response);
+            for (Player p : player1Watchers)
+                p.writeObject(response);
+
             response.setOwnBoard(true);
             opponent.writeObject(response);
+            for (Player p : player2Watchers)
+                p.writeObject(response);
+
             if (opponent.getBoard().gameOver()) {
                 turn.writeNotification(NotificationMessage.GAME_WIN);
                 opponent.writeNotification(NotificationMessage.GAME_LOSE);
@@ -168,4 +180,53 @@ public class Game {
 
     }
 
+    public synchronized void addPlayerWatcher(Player player, Player watcher) {
+        if(isPublic) {
+            if (player.hashCode() == player1.hashCode()) {
+                if (!player1Watchers.contains(watcher)) {
+                    player1Watchers.add(watcher);
+                    watcher.writeObject(player1.getBoard());
+                    watcher.writeObject(player2.getBoard());
+                }
+            } else if (player.hashCode() == player2.hashCode()) {
+                if (!player2Watchers.contains(watcher)) {
+                    player2Watchers.add(watcher);
+                    watcher.writeObject(player2.getBoard());
+                    watcher.writeObject(player1.getBoard());
+                }
+            }
+            System.out.println("kurwa");
+        }
+    }
+
+    public synchronized void removePlayerWatcher(Player player, Player watcher) {
+        if(isPublic) {
+            if (player.hashCode() == player1.hashCode()) {
+                player1Watchers.remove(watcher);
+            } else if (player.hashCode() == player2.hashCode()) {
+                player2Watchers.remove(watcher);
+            }
+        }
+    }
+
+    public synchronized boolean playerWatcherNameExists(Player player, String watcherName) {
+
+        if(isPublic) {
+            if (player.hashCode() == player1.hashCode()) {
+                for (Player p : player1Watchers) {
+                    if (watcherName.equals(p.getPlayerName())) {
+                        return true;
+                    }
+                }
+            } else if (player.hashCode() == player2.hashCode()) {
+                for (Player p : player2Watchers) {
+                    if (watcherName.equals(p.getPlayerName())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+
+    }
 }

@@ -151,7 +151,12 @@ public class Client extends Thread {
         } else if (input instanceof ChatMessage) {
             ChatMessage chatMessage = (ChatMessage) input;
             view.addChatMessage("<b>" + opponentName + ":</b> " + chatMessage.getMessage());
+        }else if (input instanceof Board){
+            Board board = (Board) input;
+            board.printBoard(true);
         }
+
+
     }
 
     public void sendBoard(Board board) throws IOException {
