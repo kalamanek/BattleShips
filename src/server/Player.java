@@ -36,7 +36,7 @@ public class Player extends Thread {
         matchRoom.addPlayer(this);
         this.requestList = new HashMap<>();
         System.out.println(socket.getRemoteSocketAddress().toString() +
-                " connected");
+                " connected with user key - " + ownKey);
     }
 
     @Override
@@ -170,6 +170,7 @@ public class Player extends Thread {
         }
         System.out.println("for Inactivity destroying " + this.login + " session on thread " + Thread.currentThread().getId());
         Thread.currentThread().interrupt();
+        //Thread.currentThread().stop();
         return;
     }
 

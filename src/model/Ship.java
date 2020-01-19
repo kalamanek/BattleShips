@@ -80,9 +80,8 @@ public class Ship implements Serializable {
     }
 
     public enum Type {
-        AIRCRAFT_CARRIER(5, "aircraft carrier"), BATTLESHIP(4, "battleship"), SUBMARINE(
-                3, "submarine"), DESTROYER(3, "destroyer"), PATROL_BOAT(2,
-                "patrol boat");
+        AIRCRAFT_CARRIER(5, "aircraft carrier"), BATTLESHIP(4, "battleship"),
+        DESTROYER(3, "destroyer"), PATROL_BOAT(2,"patrol boat");
 
         private int length;
         private String name;

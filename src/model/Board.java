@@ -31,8 +31,9 @@ public class Board implements Serializable {
         ships = new ArrayList<>();
         ships.add(new Ship(Ship.Type.AIRCRAFT_CARRIER));
         ships.add(new Ship(Ship.Type.BATTLESHIP));
-        ships.add(new Ship(Ship.Type.BATTLESHIP));
-        ships.add(new Ship(Ship.Type.BATTLESHIP));
+        ships.add(new Ship(Ship.Type.DESTROYER));
+        ships.add(new Ship(Ship.Type.DESTROYER));
+        ships.add(new Ship(Ship.Type.PATROL_BOAT));
         ships.add(new Ship(Ship.Type.PATROL_BOAT));
 
         this.changeListeners = new ArrayList<>();
