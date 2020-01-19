@@ -182,6 +182,7 @@ public class ClientView extends JFrame {
         }
     }
 
+
     public void addChatMessage(String text) {
         JScrollBar bar = chatScrollPane.getVerticalScrollBar();
         chatModel.addElement("<html>" + text + "</html>" + "\n");

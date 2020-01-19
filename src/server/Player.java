@@ -101,6 +101,7 @@ public class Player extends Thread {
                                     writeNotification(NotificationMessage.NAME_ACCEPTED);
                                     matchRoom.sendMatchRoomList();
                                 }
+                                break;
                         }
                     }
                 } else if (input instanceof Board && login != null) {
@@ -279,6 +280,9 @@ public class Player extends Thread {
     }
     public void addWatcher(Player player){
         game.addPlayerWatcher(this,player);
+    }
+    public void askForBoards(Player player){
+        game.giveWatcherBoards(this,player);
     }
     public void removeWatcher(Player player){
         game.removePlayerWatcher(this,player);

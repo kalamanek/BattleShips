@@ -39,6 +39,24 @@ public class Board implements Serializable {
         this.changeListeners = new ArrayList<>();
     }
 
+    public void setupBoard(Board board){
+        synchronized (squares) {
+            for (int i = 0; i < BOARD_DIMENSION; ++i) {
+                for (int j = 0; j < BOARD_DIMENSION; ++j) {
+                    squares[j][i].setUp(board.getSquares()[j][i]);
+                }
+            }
+        }
+        ships = board.getShips();
+        if(!ships.isEmpty())
+            for(Ship s: ships)
+                 firePropertyChange("sankShip", null, s);
+
+        firePropertyChange("newBoard", null, null);
+
+        this.printBoard(true);
+    }
+
     public static boolean isValid(Board board) {
         Board tempBoard = new Board(true);
         for (Ship s : board.getShips()) {
@@ -168,7 +186,8 @@ public class Board implements Serializable {
             for (Square shipSquare : ship.getSquares()) {
                 Square boardSquare = getSquare(shipSquare.getX(),
                         shipSquare.getY());
-                boardSquare.update(true, ship);
+                
+                 boardSquare.update(true, ship);
             }
             //TODO
             client.getView().addChatMessage("SUNK SHIP" + ship.toString());
@@ -239,6 +258,10 @@ public class Board implements Serializable {
     public void setClient(Client client) {
         this.client = client;
     }
+
+    public Square[][] getSquares(){ return squares;}
+
+    public boolean getOwnBoard(){ return ownBoard;}
 
     private void firePropertyChange(String property, Object oldValue,
             Object newValue) {

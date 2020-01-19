@@ -20,6 +20,13 @@ public class Square implements Serializable {
         this.state = (ownBoard) ? State.NO_SHIP : State.UNKNOWN;
         this.changeListeners = new ArrayList<>();
     }
+    public void setUp(Square s) {
+        this.ship = s.getShip();
+        this.guessed = s.getGuess();
+        this.x = s.getX();
+        this.y = s.getY();
+        this.state = s.getState();
+    }
 
     public boolean isShip() {
         return (ship != null);
@@ -72,6 +79,10 @@ public class Square implements Serializable {
 
     public int getY() {
         return y;
+    }
+
+    public Boolean getGuess() {
+        return guessed;
     }
 
     public State getState() {

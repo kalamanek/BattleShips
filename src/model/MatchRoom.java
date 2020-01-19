@@ -1,5 +1,6 @@
 package model;
 
+import server.messages.BoardMessage;
 import server.messages.MatchRoomListMessage;
 import server.messages.NotificationMessage;
 import view.ClientView;

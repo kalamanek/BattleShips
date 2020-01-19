@@ -47,6 +47,11 @@ public class MatchRoom {
                 watchRequest(player, args[2]);
             }
             break;
+        case "boards":
+            if (args.length == 3) {
+                watchActualBoardStatusRequest(player, args[2]);
+            }
+        break;
         case "reject":
             if (args.length == 3) {
                 rejectRequest(player, args[2]);
@@ -87,6 +92,18 @@ public class MatchRoom {
             friend.addWatcher(player);
         }
     }
+
+    private synchronized void watchActualBoardStatusRequest(Player player, String key) {
+        Player friend = waitingPlayerList.get(key);
+        if (player == friend) {
+            player.writeNotification(NotificationMessage.CANNOT_PLAY_YOURSELF);
+        } else if (friend != null) {
+            System.out.println("Request to get boards " + player.getPlayerName() + " by player " + friend.getPlayerName());
+            friend.askForBoards(player);
+        }
+    }
+
+
     private synchronized void acceptRequest(Player player, String key) {
         Player opponent = waitingPlayerList.get(key);
         if (opponent != null &&

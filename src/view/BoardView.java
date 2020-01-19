@@ -198,7 +198,7 @@ public class BoardView extends JPanel implements PropertyChangeListener {
     }
 
     public void addShipView(Ship ship) {
-        int topLeft[] = ship.getTopLeft();
+        int[] topLeft = ship.getTopLeft();
         ShipView shipView = new ShipView(ship.getLength(), SQUARE_WIDTH,
                 topLeft[0] * SQUARE_WIDTH, topLeft[1] * SQUARE_WIDTH, ship);
         if (ship.isVertical()) {
@@ -278,6 +278,9 @@ public class BoardView extends JPanel implements PropertyChangeListener {
             rotateSelectedShip();
         } else if (evt.getPropertyName().equals("resetSelectedShip")) {
             resetSelectedShipView();
+        } else if(evt.getPropertyName().equals("newBoard")){
+
+            repaint();
         }
     }
 }

@@ -20,6 +20,7 @@ public class Client extends Thread {
     private ObjectInputStream in;
 
     private String opponentName = "Player";
+    private String FriendKey = null;
 
     public Client(ClientView clientView, Board ownBoard, Board opponentBoard,
             ObjectOutputStream out, ObjectInputStream in) {
@@ -62,13 +63,16 @@ public class Client extends Thread {
                     view.setTitle("Playing Battleships against " +
                             opponentName);
                 }
+
                 break;
             case NotificationMessage.FRIEND_OPPONENTS:
-                if (n.getText().length == 1) {
-                    opponentName = n.getText()[0];
+                System.out.println("got friends oponent");
+                if (n.getText().length == 2) {
+                    FriendKey = n.getText()[0];
+                    opponentName = n.getText()[1];
                     view.setTitle("Watching friends game in Battleships against " +
                             opponentName);
-                    getBoards();
+                    askForWatchBoards(FriendKey);
                 }
                 break;
             case NotificationMessage.BOARD_ACCEPTED:
@@ -158,20 +162,29 @@ public class Client extends Thread {
             view.addChatMessage("<b>" + opponentName + ":</b> " + chatMessage.getMessage());
         }else if (input instanceof BoardMessage){
             BoardMessage boards = (BoardMessage) input;
-            boards.getEnemyBoard().printBoard(true);
-            boards.getFriendBoard().printBoard(true);
+            if(boards.getFriendBoard() != null)
+                this.ownBoard.setupBoard(boards.getFriendBoard());
+            if(boards.getEnemyBoard() != null)
+                this.opponentBoard.setupBoard(boards.getEnemyBoard());
         }
 
 
     }
 
+    public void askForWatchBoards(String key){
+        try {
+            out.writeObject(new String[]{"join", "boards", key});
+            out.flush();
+        }catch(Exception e){
+            e.getStackTrace();
+        }
+    }
+
+
     public void sendBoard(Board board) throws IOException {
         out.reset();
         out.writeObject(board);
         out.flush();
-    }
-    public void getBoards(){
-
     }
 
     public ClientView getView() {

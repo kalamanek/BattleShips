@@ -91,6 +91,12 @@ public class Game {
 
     private void startGame() {
         gameStarted = true;
+        for (Player p : player1Watchers)
+            giveWatcherBoards(player1 ,p);
+
+        for (Player p : player2Watchers)
+            giveWatcherBoards(player2 ,p);
+
         if (new Random().nextInt(2) == 0) {
             setTurn(player1);
         } else {
@@ -124,13 +130,23 @@ public class Game {
                 response = new MoveResponseMessage(x, y, null, hit, false);
             }
             player.writeObject(response);
-            for (Player p : player1Watchers)
-                p.writeObject(response);
 
+
+            if(player.hashCode() == player1.hashCode())
+                for (Player p : player1Watchers)
+                    p.writeObject(response);
+            else
+                for (Player p : player2Watchers)
+                    p.writeObject(response);
             response.setOwnBoard(true);
             opponent.writeObject(response);
-            for (Player p : player2Watchers)
-                p.writeObject(response);
+
+            if(player.hashCode() == player2.hashCode())
+                for (Player p : player1Watchers)
+                    p.writeObject(response);
+            else
+                for (Player p : player2Watchers)
+                    p.writeObject(response);
 
             if (opponent.getBoard().gameOver()) {
                 turn.writeNotification(NotificationMessage.GAME_WIN);
@@ -187,12 +203,12 @@ public class Game {
             if (player.hashCode() == player1.hashCode()) {
                 if (!player1Watchers.contains(watcher)) {
                     player1Watchers.add(watcher);
-                    watcher.writeNotification(NotificationMessage.FRIEND_OPPONENTS , player2.getPlayerName());
+                    watcher.writeNotification(NotificationMessage.FRIEND_OPPONENTS , player1.getOwnKey(),player2.getPlayerName());
                 }
             } else if (player.hashCode() == player2.hashCode()) {
                 if (!player2Watchers.contains(watcher)) {
                     player2Watchers.add(watcher);
-                    watcher.writeNotification(NotificationMessage.FRIEND_OPPONENTS , player1.getPlayerName());
+                    watcher.writeNotification(NotificationMessage.FRIEND_OPPONENTS , player1.getOwnKey(),player2.getPlayerName());
                 }
             }
         }
@@ -200,17 +216,17 @@ public class Game {
     public synchronized void giveWatcherBoards(Player player, Player watcher) {
         if(isPublic) {
             if (player.hashCode() == player1.hashCode()) {
-                if (!player1Watchers.contains(watcher)) {
-                    BoardMessage message =  new BoardMessage(
-                            player2.getBoard() == null ? new Board(true) : player2.getBoard(),
-                            player1.getBoard() == null ? new Board(false) : player1.getBoard());
-                    watcher.writeObject(message);
-                }
-            } else if (player.hashCode() == player2.hashCode()) {
-                if (!player2Watchers.contains(watcher)) {
+                if (player1Watchers.contains(watcher)) {
                     BoardMessage message =  new BoardMessage(
                             player1.getBoard() == null ? new Board(true) : player1.getBoard(),
                             player2.getBoard() == null ? new Board(false) : player2.getBoard());
+                    watcher.writeObject(message);
+                }
+            } else if (player.hashCode() == player2.hashCode()) {
+                if (player2Watchers.contains(watcher)) {
+                    BoardMessage message =  new BoardMessage(
+                            player2.getBoard() == null ? new Board(true) : player2.getBoard(),
+                            player1.getBoard() == null ? new Board(false) : player1.getBoard());
                     watcher.writeObject(message);
                 }
             }
