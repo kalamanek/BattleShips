@@ -18,7 +18,7 @@ public class Player extends Thread {
 
     private Socket socket;
     private MatchRoom matchRoom;
-    private String login = "";
+    private String login = null;
     private ObjectOutputStream out;
     private Game game;
     private Board board;
@@ -66,7 +66,8 @@ public class Player extends Thread {
 
                         switch (message) {
                             case "join":
-                                matchRoom.parse(this, array);
+                                if(login != null)
+                                    matchRoom.parse(this, array);
                                 break;
                             case "login":
                                 if (length != 3 || array[1] == null ||
@@ -102,7 +103,7 @@ public class Player extends Thread {
                                 }
                         }
                     }
-                } else if (input instanceof Board) {
+                } else if (input instanceof Board && login != null) {
                     Board board = (Board) input;
                     if (Board.isValid(board) && game != null) {
                         writeNotification(NotificationMessage.BOARD_ACCEPTED);
@@ -113,11 +114,11 @@ public class Player extends Thread {
                     } else {
                         writeNotification(NotificationMessage.INVALID_BOARD);
                     }
-                } else if (input instanceof MoveMessage) {
+                } else if (input instanceof MoveMessage && login != null){
                     if (game != null) {
                         game.applyMove((MoveMessage) input, this);
                     }
-                } else if (input instanceof ChatMessage) {
+                } else if (input instanceof ChatMessage && login != null) {
                     if (game != null) {
                         Player opponent = game.getOpponent(this);
                         if (opponent != null) {
