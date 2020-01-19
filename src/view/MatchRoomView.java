@@ -1,6 +1,7 @@
 package view;
 
 import model.MatchRoom;
+import model.RoomPlayer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -37,6 +38,7 @@ public class MatchRoomView extends JFrame {
 
         playersList = new JList<>();
         playersList.setModel(playersListModel);
+        playersList.setCellRenderer(new PlayerListRenderer());
         playersList.addMouseListener(new PlayersListMouseAdapter());
         playersList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         sendInvite = new JButton("Send invite");
@@ -220,29 +222,6 @@ public class MatchRoomView extends JFrame {
         new MatchRoomView();
     }
 
-    private class RoomPlayer {
-
-        private String key;
-        private String name;
-
-        public RoomPlayer(String key, String name) {
-            this.key = key;
-            this.name = name;
-        }
-
-        public String toString() {
-            return this.name;
-        }
-
-        public String getKey() {
-            return this.key;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-    }
 
     public void showConfigFileError() {
         String message = "Make sure you have a config.properties file\n" +
