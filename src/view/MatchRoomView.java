@@ -3,15 +3,22 @@ package view;
 import model.MatchRoom;
 import model.RoomPlayer;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -114,21 +121,71 @@ public class MatchRoomView extends JFrame {
             JTextField name = new JTextField();
             JTextField password = new JPasswordField();
             JTextField confirmPassword = new JPasswordField();
+            JButton selectAvatarFileButton = new JButton("Select file");
+            JLabel avatar = new JLabel();
+            JFileChooser avatarFileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
             Object[] mes = {
                     message,
                     "Username:", name,
                     "Password:", password,
-                    "Confirm Password:", confirmPassword
+                    "Confirm Password:", confirmPassword,
+                    "Avatar: (optional)", avatar,
+                    selectAvatarFileButton
             };
 
+
+        /*    //Ustawianie domyslnego awatara
+
+            try {
+                ImageIcon avatar = new ImageIcon(ImageIO.read(new File("resources/avatar/avatar.png")));
+                avatar.setIcon(avatar);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Some files have been deleted",
+                        "Fatal error", JOptionPane.ERROR_MESSAGE);
+                System.exit(-1);
+            }
+*/
+            selectAvatarFileButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int returnValue = avatarFileChooser.showDialog(null, "Select");
+                    if (returnValue == JFileChooser.APPROVE_OPTION) {
+                        File selectedFile = avatarFileChooser.getSelectedFile();
+
+                        try {
+                            ImageIcon avatarImage = new ImageIcon(ImageIO.read(new File(selectedFile.getAbsolutePath())));
+                            avatar.setIcon(avatarImage);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
+            });
+            UIManager.put("OptionPane.minimumSize", new Dimension(500, 500));
             int option = JOptionPane.showConfirmDialog(null, mes, "Register", JOptionPane.OK_CANCEL_OPTION);
 
             if (name == null || password == null || option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
                 System.exit(-1);
             }
 
-            if (password.equals(confirmPassword)) {
-                this.matchRoom.sendRegistration(name.getText(), password.getText());
+            byte[] avatarByteArray;
+
+            if (avatar.getIcon() != null) {
+                Icon icon = avatar.getIcon();
+                BufferedImage image = new BufferedImage(icon.getIconWidth(),
+                        icon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(image, "png", bos);
+                    avatarByteArray = bos.toByteArray();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (password.getText().equals(confirmPassword.getText())) {
+                this.matchRoom.sendRegistration(name.getText(), password.getText()); //TO DO przesłać avatarByteArray
                 synchronized (matchRoom) {
                     try {
                         if (matchRoom.getNameState() == MatchRoom.NameState.WAITING) {
