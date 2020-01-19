@@ -208,28 +208,29 @@ public class Game {
             } else if (player.hashCode() == player2.hashCode()) {
                 if (!player2Watchers.contains(watcher)) {
                     player2Watchers.add(watcher);
-                    watcher.writeNotification(NotificationMessage.FRIEND_OPPONENTS , player1.getOwnKey(),player2.getPlayerName());
+                    watcher.writeNotification(NotificationMessage.FRIEND_OPPONENTS , player2.getOwnKey(),player1.getPlayerName());
                 }
             }
         }
     }
     public synchronized void giveWatcherBoards(Player player, Player watcher) {
-        if(isPublic) {
+        if(isPublic && player1.getBoard() != null && player2.getBoard() != null) {
             if (player.hashCode() == player1.hashCode()) {
                 if (player1Watchers.contains(watcher)) {
                     BoardMessage message =  new BoardMessage(
-                            player1.getBoard() == null ? new Board(true) : player1.getBoard(),
-                            player2.getBoard() == null ? new Board(false) : player2.getBoard());
+                            player1.getBoard(), player2.getBoard());
                     watcher.writeObject(message);
                 }
             } else if (player.hashCode() == player2.hashCode()) {
                 if (player2Watchers.contains(watcher)) {
                     BoardMessage message =  new BoardMessage(
-                            player2.getBoard() == null ? new Board(true) : player2.getBoard(),
-                            player1.getBoard() == null ? new Board(false) : player1.getBoard());
+                            player2.getBoard(), player1.getBoard());
                     watcher.writeObject(message);
                 }
             }
+        }else{
+            watcher.writeObject(new BoardMessage(
+                    null, null));
         }
     }
 
