@@ -17,6 +17,7 @@ import java.util.TimerTask;
 
 public class Player extends Thread {
 
+    public String avatar;
     private Socket socket;
     private MatchRoom matchRoom;
     private String login = null;
@@ -83,6 +84,7 @@ public class Player extends Thread {
                                 }else {
                                     if(Server.checkUser(array[1],array[2])) {
                                         login = array[1];
+                                        avatar = Server.getAvatar(login);
                                         writeNotification(NotificationMessage.NAME_ACCEPTED);
                                         matchRoom.sendMatchRoomList();
                                         //send avatar
@@ -92,18 +94,18 @@ public class Player extends Thread {
                                 }
                                 break;
                             case "register":
-                                if (length != 3 || array[1] == null ||
+                                if (length != 4 || array[1] == null ||
                                         array[1].equals("")) {
                                     writeNotification(NotificationMessage.INVALID_LOGIN_NAME);
                                 }else if (Server.userExist(array[1])) {
                                     writeNotification(NotificationMessage.NAME_TAKEN);
                                 }else{
                                     Server.addUser(array[1],array[2]);
+                                    this.avatar = array[3];
+                                    Server.addAvatar(array[1], avatar);
                                     login = array[1];
-                                    //recive avatar
                                     writeNotification(NotificationMessage.NAME_ACCEPTED);
                                     matchRoom.sendMatchRoomList();
-                                    //send avatar
                                 }
                                 break;
                         }
