@@ -5,8 +5,9 @@ import model.RoomPlayer;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Base64;
 
 public class PlayerListRenderer extends JLabel implements ListCellRenderer<RoomPlayer> {
 
@@ -15,11 +16,12 @@ public class PlayerListRenderer extends JLabel implements ListCellRenderer<RoomP
     }
 
     @Override
-    public Component getListCellRendererComponent(JList<? extends RoomPlayer> list, RoomPlayer value, int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(JList<? extends RoomPlayer> list, RoomPlayer player, int index, boolean isSelected, boolean cellHasFocus) {
 
 
         try {
-            ImageIcon avatar = new ImageIcon(ImageIO.read(new File("resources/avatar/avatar.png")));
+            byte[] avatarByteArray = Base64.getDecoder().decode(player.getAvatar());
+            ImageIcon avatar = new ImageIcon(ImageIO.read(new ByteArrayInputStream(avatarByteArray)));
             setIcon(avatar);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Some files have been deleted",
@@ -27,7 +29,7 @@ public class PlayerListRenderer extends JLabel implements ListCellRenderer<RoomP
             System.exit(-1);
         }
 
-        setText(value.getName());
+        setText(player.getName());
 
         if (isSelected) {
             setBackground(list.getSelectionBackground());

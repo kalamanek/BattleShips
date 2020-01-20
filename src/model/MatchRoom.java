@@ -111,9 +111,9 @@ public class MatchRoom extends Thread {
         sendStringArray(new String[]{"login", name, password});
     }
 
-    public void sendRegistration(String name, String password){
+    public void sendRegistration(String name, String password, String imageString) {
         this.nameState = NameState.WAITING;
-        sendStringArray(new String[]{"register", name, password});
+        sendStringArray(new String[]{"register", name, password, imageString});
     }
 
 
@@ -138,7 +138,7 @@ public class MatchRoom extends Thread {
 
     private void parseInput(Object input) {
         if (input instanceof MatchRoomListMessage) {
-            final HashMap<String, String> matchRoomList = ((MatchRoomListMessage) input)
+            final HashMap<String, RoomListPlayer> matchRoomList = ((MatchRoomListMessage) input)
                     .getMatchRoomList();
             EventQueue.invokeLater(new Runnable() {
                 @Override

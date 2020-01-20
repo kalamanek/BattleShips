@@ -1,6 +1,7 @@
 package view;
 
 import model.MatchRoom;
+import model.RoomListPlayer;
 import model.RoomPlayer;
 
 import javax.imageio.ImageIO;
@@ -19,6 +20,7 @@ import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +28,7 @@ public class MatchRoomView extends JFrame {
 
     private DefaultListModel<RoomPlayer> playersListModel = new DefaultListModel<RoomPlayer>();
     private MatchRoom matchRoom;
-    private HashMap<String, String> matchRoomList;
+    private HashMap<String, RoomListPlayer> matchRoomList;
     private JList<RoomPlayer> playersList;
     private JButton sendInvite;
     private JLabel playersNumber;
@@ -134,17 +136,16 @@ public class MatchRoomView extends JFrame {
             };
 
 
-        /*    //Ustawianie domyslnego awatara
-
+            //Setting default avatar
             try {
-                ImageIcon avatar = new ImageIcon(ImageIO.read(new File("resources/avatar/avatar.png")));
-                avatar.setIcon(avatar);
+                ImageIcon image = new ImageIcon(ImageIO.read(new File("resources/avatar/avatar.png")));
+                avatar.setIcon(image);
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "Some files have been deleted",
                         "Fatal error", JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             }
-*/
+
             selectAvatarFileButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -161,14 +162,14 @@ public class MatchRoomView extends JFrame {
                     }
                 }
             });
-            UIManager.put("OptionPane.minimumSize", new Dimension(500, 500));
+            //UIManager.put("OptionPane.minimumSize", new Dimension(500, 500));
             int option = JOptionPane.showConfirmDialog(null, mes, "Register", JOptionPane.OK_CANCEL_OPTION);
 
             if (name == null || password == null || option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
                 System.exit(-1);
             }
 
-            byte[] avatarByteArray;
+            byte[] avatarByteArray = {};
 
             if (avatar.getIcon() != null) {
                 Icon icon = avatar.getIcon();
@@ -185,7 +186,9 @@ public class MatchRoomView extends JFrame {
             }
 
             if (password.getText().equals(confirmPassword.getText())) {
-                this.matchRoom.sendRegistration(name.getText(), password.getText()); //TO DO przesłać avatarByteArray
+                String imageString = Base64.getEncoder().encodeToString(avatarByteArray);
+
+                this.matchRoom.sendRegistration(name.getText(), password.getText(), imageString); //TO DO przesłać avatarByteArray
                 synchronized (matchRoom) {
                     try {
                         if (matchRoom.getNameState() == MatchRoom.NameState.WAITING) {
@@ -249,7 +252,7 @@ public class MatchRoomView extends JFrame {
     }
 
     public boolean playerNameExists(String name) {
-        for (Map.Entry<String, String> entry : matchRoomList.entrySet()) {
+        for (Map.Entry<String, RoomListPlayer> entry : matchRoomList.entrySet()) {
             if (entry.getValue().equals(name)) {
                 return true;
             }
@@ -258,14 +261,15 @@ public class MatchRoomView extends JFrame {
     }
 
     public synchronized void updateMatchRoomList(
-            HashMap<String, String> matchRoomList) {
+            HashMap<String, RoomListPlayer> matchRoomList) {
         this.matchRoomList = matchRoomList;
         this.playersListModel.clear();
-        for (Map.Entry<String, String> entry : matchRoomList.entrySet()) {
+        for (Map.Entry<String, RoomListPlayer> entry : matchRoomList.entrySet()) {
             String key = entry.getKey();
             if (!key.equals(matchRoom.getKey())) {
-                String name = entry.getValue();
-                RoomPlayer player = new RoomPlayer(key, name);
+                String name = entry.getValue().getName();
+                String avatar = entry.getValue().getImage();
+                RoomPlayer player = new RoomPlayer(key, name, avatar);
                 this.playersListModel.addElement(player);
             }
         }

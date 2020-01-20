@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import model.RoomListPlayer;
 import server.messages.MatchRoomListMessage;
 import server.messages.NotificationMessage;
 
@@ -161,14 +162,16 @@ public class MatchRoom {
     }
 
     public synchronized void sendMatchRoomList() {
-        HashMap<String, String> matchRoomList = new HashMap<String, String>();
+        HashMap<String, RoomListPlayer> matchRoomList = new HashMap<String, RoomListPlayer>();
         for (Map.Entry<String, Player> entry : waitingPlayerList.entrySet()) {
             String key = entry.getKey();
             Player player = entry.getValue();
-            matchRoomList.put(key,
-                    player.isInGame() ?
-                            player.getPlayerName() + " (in game)":
-                            player.getPlayerName()
+            matchRoomList.put(key, new RoomListPlayer(player.isInGame() ?
+                            player.getName() + " (in game)" :
+                            player.getPlayerName(),
+                            player.avatar
+                    )
+
                     );
         }
         MatchRoomListMessage message = new MatchRoomListMessage(matchRoomList);

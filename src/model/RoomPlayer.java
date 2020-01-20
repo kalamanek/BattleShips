@@ -3,10 +3,12 @@ package model;
 public class RoomPlayer {
     private String key;
     private String name;
+    private String avatar;
 
-    public RoomPlayer(String key, String name) {
+    public RoomPlayer(String key, String name, String avatar) {
         this.key = key;
         this.name = name;
+        this.avatar = avatar;
     }
 
     public String toString() {
@@ -21,4 +23,7 @@ public class RoomPlayer {
         return this.name;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
 }
