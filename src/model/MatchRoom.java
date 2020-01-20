@@ -154,13 +154,10 @@ public class MatchRoom extends Thread {
                         key = n.getText()[0];
                     }
                     break;
+                case NotificationMessage.FRIEND_OPPONENTS:
                 case NotificationMessage.OPPONENTS_NAME:
                     disposeAllPanes();
                     startGame(input);
-                    break;
-                case NotificationMessage.FRIEND_OPPONENTS:
-                    disposeAllPanes();
-                    joinGame(input);
                     break;
                 case NotificationMessage.NAME_ACCEPTED:
                     setNameState(NameState.ACCEPTED);
@@ -210,12 +207,7 @@ public class MatchRoom extends Thread {
         ClientView clientView = new ClientView(this.out, this.in, this);
         clientModel = clientView.getModel();
         clientModel.parseInput(firstInput);
-    }
-    private void joinGame(Object firstInput) {
-        matchRoomView.setVisible(false);
-        ClientView clientView = new ClientView(this.out, this.in, this);
-        clientModel = clientView.getModel();
-        clientModel.parseInput(firstInput);
+        clientModel.setSelfName(ownName);
     }
 
     public String getKey() {

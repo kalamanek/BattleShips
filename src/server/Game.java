@@ -21,7 +21,7 @@ public class Game {
     private Player player2;
     private ArrayList<Player>  player2Watchers;
     private Player turn;
-    private Boolean isPublic = true;
+    private Boolean isPublic = false;
 
     private Timer placementTimer;
     private Timer turnTimer;
@@ -31,7 +31,8 @@ public class Game {
 
     private boolean gameStarted;
 
-    public Game(Player player1, Player player2) {
+    public Game(Player player1, Player player2,boolean isPublic) {
+        this.isPublic = isPublic;
         this.player1Watchers = new ArrayList<>();
         this.player2Watchers = new ArrayList<>();
         this.player1 = player1;
@@ -235,7 +236,7 @@ public class Game {
     }
 
 
-        public synchronized void removePlayerWatcher(Player player, Player watcher) {
+    public synchronized void removePlayerWatcher(Player player, Player watcher) {
         if(isPublic) {
             if (player.hashCode() == player1.hashCode()) {
                 player1Watchers.remove(watcher);
@@ -243,6 +244,15 @@ public class Game {
                 player2Watchers.remove(watcher);
             }
         }
+    }
+
+    public synchronized ArrayList<Player> getPlayerWatchers(Player player){
+        if (player.hashCode() == player1.hashCode()){
+            return player1Watchers;
+        }else if(player.hashCode() == player2.hashCode()) {
+            return player2Watchers;
+        }
+        return null;
     }
 
     public synchronized boolean playerWatcherNameExists(Player player, String watcherName) {

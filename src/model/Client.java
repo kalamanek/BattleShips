@@ -20,6 +20,7 @@ public class Client extends Thread {
     private ObjectInputStream in;
 
     private String opponentName = "Player";
+    private String myName = "player";
     private String FriendKey = null;
 
     public Client(ClientView clientView, Board ownBoard, Board opponentBoard,
@@ -159,16 +160,19 @@ public class Client extends Thread {
             }
         } else if (input instanceof ChatMessage) {
             ChatMessage chatMessage = (ChatMessage) input;
-            view.addChatMessage("<b>" + opponentName + ":</b> " + chatMessage.getMessage());
+            view.addChatMessage("<b>" + chatMessage.getWho() + ":</b> " + chatMessage.getMessage());
         }else if (input instanceof BoardMessage){
             BoardMessage boards = (BoardMessage) input;
             if(boards.getFriendBoard() != null)
-                this.ownBoard.setupBoard(boards.getFriendBoard());
+                this.ownBoard.setupBoard(boards.getFriendBoard(),true);
             if(boards.getEnemyBoard() != null)
-                this.opponentBoard.setupBoard(boards.getEnemyBoard());
+                this.opponentBoard.setupBoard(boards.getEnemyBoard(),false);
         }
 
 
+    }
+    public void setSelfName(String name){
+        this.myName = name;
     }
 
     public void askForWatchBoards(String key){
@@ -193,7 +197,7 @@ public class Client extends Thread {
 
     public void sendChatMessage(String message) throws IOException {
         System.out.println(message);
-        out.writeObject(new ChatMessage(message));
+        out.writeObject(new ChatMessage(message,myName));
         out.flush();
     }
 

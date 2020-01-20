@@ -37,8 +37,16 @@ public class MatchRoom {
             break;
         case "accept":
             player.leaveGame();
-            if (args.length == 3) {
-                acceptRequest(player, args[2]);
+            if (args.length == 4) {
+                String gameType = args[3];
+                switch (gameType) {
+                    case "public":
+                        acceptRequest(player, args[2], true);
+                        break;
+                    case "private":
+                        acceptRequest(player, args[2], false);
+                        break;
+                }
             }
             break;
         case "watch":
@@ -104,14 +112,16 @@ public class MatchRoom {
     }
 
 
-    private synchronized void acceptRequest(Player player, String key) {
+    private synchronized void acceptRequest(Player player, String key,boolean isPublic) {
         Player opponent = waitingPlayerList.get(key);
         if (opponent != null &&
                 opponent.getRequestedGameKey().equals(player.getOwnKey())) {
-            //waitingPlayerList.remove(key);
-            //waitingPlayerList.values().remove(player);
+            if(!isPublic) {
+                waitingPlayerList.remove(key);
+                waitingPlayerList.values().remove(player);
+            }
             opponent.requestAccepted(player);
-            new Game(opponent, player);
+            new Game(opponent, player, isPublic);
             sendMatchRoomList();
             player.rejectAll();
             opponent.rejectAll();

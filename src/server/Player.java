@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -124,6 +125,12 @@ public class Player extends Thread {
                         Player opponent = game.getOpponent(this);
                         if (opponent != null) {
                             opponent.writeObject(input);
+                            ArrayList<Player> watchers = game.getPlayerWatchers(opponent);
+                            watchers.addAll(game.getPlayerWatchers(this));
+                            if (watchers != null)
+                                for(Player p :watchers){
+                                    p.writeObject(input);
+                                }
                         }
                     }
                 }

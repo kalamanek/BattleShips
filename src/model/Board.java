@@ -39,7 +39,7 @@ public class Board implements Serializable {
         this.changeListeners = new ArrayList<>();
     }
 
-    public void setupBoard(Board board){
+    public void setupBoard(Board board,boolean isVisible){
         synchronized (squares) {
             for (int i = 0; i < BOARD_DIMENSION; ++i) {
                 for (int j = 0; j < BOARD_DIMENSION; ++j) {
@@ -48,7 +48,8 @@ public class Board implements Serializable {
             }
         }
         ships = board.getShips();
-        if(!ships.isEmpty())
+
+        if(!ships.isEmpty() && isVisible)
             for(Ship s: ships)
                  firePropertyChange("sankShip", null, s);
 
