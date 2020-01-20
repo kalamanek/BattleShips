@@ -110,9 +110,9 @@ public class MatchRoomView extends JFrame {
 
         if (response == 0) {
             askForLoginAndPassword();
-        } else if(response == 1){
+        } else if (response == 1) {
             registerUser();
-        }else{
+        } else {
             System.exit(-1);
         }
     }
@@ -191,29 +191,29 @@ public class MatchRoomView extends JFrame {
             if (password.getText().equals(confirmPassword.getText())) {
                 String imageString = Base64.getEncoder().encodeToString(avatarByteArray);
 
-                this.matchRoom.sendRegistration(name.getText(), password.getText(), imageString); //TO DO przesłać avatarByteArray
+                this.matchRoom.sendRegistration(name.getText(), password.getText(), imageString);
                 synchronized (matchRoom) {
                     try {
                         if (matchRoom.getNameState() == MatchRoom.NameState.WAITING) {
                             matchRoom.wait();
                         }
-                    } catch (Exception e) {
-                            e.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                }
-                MatchRoom.NameState state = matchRoom.getNameState();
-                if (state == MatchRoom.NameState.ACCEPTED) {
-                    matchRoom.setOwnName(name.getText());
-                    break;
-                } else if (state == MatchRoom.NameState.INVALID) {
-                    message = "You must choose a valid login name.";
-                } else if (state == MatchRoom.NameState.TAKEN) {
-                    message = "This nickname already exists, please try again.";
+
+                    MatchRoom.NameState state = matchRoom.getNameState();
+                    if (state == MatchRoom.NameState.ACCEPTED) {
+                        matchRoom.setOwnName(name.getText());
+                        break;
+                    } else if (state == MatchRoom.NameState.INVALID) {
+                        message = "You must choose a valid login name.";
+                    } else if (state == MatchRoom.NameState.TAKEN) {
+                        message = "This nickname already exists, please try again.";
+                    }
                 }
             }
         }
     }
-
 
 
     private void askForLoginAndPassword() {
