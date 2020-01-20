@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -22,6 +23,7 @@ public class PlayerListRenderer extends JLabel implements ListCellRenderer<RoomP
         try {
             byte[] avatarByteArray = Base64.getDecoder().decode(player.getAvatar());
             ImageIcon avatar = new ImageIcon(ImageIO.read(new ByteArrayInputStream(avatarByteArray)));
+
             setIcon(avatar);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Some files have been deleted",

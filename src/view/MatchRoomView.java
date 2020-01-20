@@ -175,6 +175,9 @@ public class MatchRoomView extends JFrame {
                 Icon icon = avatar.getIcon();
                 BufferedImage image = new BufferedImage(icon.getIconWidth(),
                         icon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+                Graphics g = image.createGraphics();
+                icon.paintIcon(null, g, 0, 0);
+                g.dispose();
 
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 try {
