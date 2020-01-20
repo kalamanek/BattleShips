@@ -29,7 +29,10 @@ public class Server {
         users.put("b","b");
         users.put("q","q");
         users.put("w","w");
-        //avatars.put("a","a");
+        avatars.put("a","iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAIAAAADnC86AAAAHElEQVR4Xu3BAQ0AAADCoPdPbQ43oAAAAADg3wAS6AABnT4c2wAAAABJRU5ErkJggg");
+        avatars.put("b","iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAIAAAADnC86AAAAHElEQVR4Xu3BAQ0AAADCoPdPbQ43oAAAAADg3wAS6AABnT4c2wAAAABJRU5ErkJggg");
+        avatars.put("q","iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAIAAAADnC86AAAAHElEQVR4Xu3BAQ0AAADCoPdPbQ43oAAAAADg3wAS6AABnT4c2wAAAABJRU5ErkJggg");
+        avatars.put("w","iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAIAAAADnC86AAAAHElEQVR4Xu3BAQ0AAADCoPdPbQ43oAAAAADg3wAS6AABnT4c2wAAAABJRU5ErkJggg");
 
         int port = 8900;
 
