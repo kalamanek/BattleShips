@@ -85,6 +85,7 @@ public class Player extends Thread {
                                         login = array[1];
                                         writeNotification(NotificationMessage.NAME_ACCEPTED);
                                         matchRoom.sendMatchRoomList();
+                                        //send avatar
                                     }else{
                                         writeNotification(NotificationMessage.PASSWORD_IS_INVALID);
                                     }
@@ -99,8 +100,10 @@ public class Player extends Thread {
                                 }else{
                                     Server.addUser(array[1],array[2]);
                                     login = array[1];
+                                    //recive avatar
                                     writeNotification(NotificationMessage.NAME_ACCEPTED);
                                     matchRoom.sendMatchRoomList();
+                                    //send avatar
                                 }
                                 break;
                         }

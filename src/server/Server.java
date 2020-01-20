@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 public class Server {
     private static HashMap<String, String> users;
+    private static HashMap<String, String> avatars;
 
     public Server(int port) {
         try {
@@ -63,5 +64,29 @@ public class Server {
             return true;
         }
     }
+    public static boolean addAvatar(String login , String avatar){
+        synchronized (avatars){
+            if(!avatars.containsKey(login))
+            try {
+                avatars.put(login,avatar);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+
+    }
+    public static String getAvatar(String login){
+        synchronized (avatars){
+            if(avatars.containsKey(login))
+                return avatars.get(login);
+            else
+                return null;
+        }
+
+    }
+
+
 
 }
