@@ -24,10 +24,12 @@ public class Server {
 
     public static void main(String[] args) {
         users = new HashMap<>();
+        avatars = new HashMap<>();
         users.put("a","a");
         users.put("b","b");
         users.put("q","q");
         users.put("w","w");
+        //avatars.put("a","a");
 
         int port = 8900;
 
@@ -64,18 +66,19 @@ public class Server {
             return true;
         }
     }
+
     public static boolean addAvatar(String login , String avatar){
         synchronized (avatars){
-            if(!avatars.containsKey(login))
-            try {
-                avatars.put(login,avatar);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
+            if(!avatars.containsKey(login)) {
+                try {
+                    avatars.put(login, avatar);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
             return true;
         }
-
     }
     public static String getAvatar(String login){
         synchronized (avatars){
