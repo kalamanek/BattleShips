@@ -125,7 +125,7 @@ public class MatchRoomView extends JFrame {
             JTextField confirmPassword = new JPasswordField();
             JButton selectAvatarFileButton = new JButton("Select file");
             JLabel avatar = new JLabel();
-            JFileChooser avatarFileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            JFileChooser avatarFileChooser = new JFileChooser(System.getProperty("user.dir"));
             Object[] mes = {
                     message,
                     "Username:", name,

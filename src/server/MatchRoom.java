@@ -167,7 +167,7 @@ public class MatchRoom {
             String key = entry.getKey();
             Player player = entry.getValue();
             matchRoomList.put(key, new RoomListPlayer(player.isInGame() ?
-                            player.getName() + " (in game)" :
+                            player.getPlayerName() + " (in game)" :
                             player.getPlayerName(),
                             player.avatar
                     )
