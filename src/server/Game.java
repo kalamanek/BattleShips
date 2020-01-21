@@ -31,7 +31,7 @@ public class Game {
 
     private boolean gameStarted;
 
-    public Game(Player player1, Player player2,boolean isPublic) {
+    public Game(Player player1, Player player2, boolean isPublic) {
         this.isPublic = isPublic;
         this.player1Watchers = new ArrayList<>();
         this.player2Watchers = new ArrayList<>();

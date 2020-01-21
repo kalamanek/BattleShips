@@ -113,7 +113,7 @@ public class MatchRoom {
     }
 
 
-    private synchronized void acceptRequest(Player player, String key,boolean isPublic) {
+    private synchronized void acceptRequest(Player player, String key, boolean isPublic) {
         Player opponent = waitingPlayerList.get(key);
         if (opponent != null &&
                 opponent.getRequestedGameKey().equals(player.getOwnKey())) {

@@ -29,7 +29,7 @@ public class Player extends Thread {
     private String requestedGameKey;
     private Timer inactivityTimer;
 
-    public final static int INACTIVITY_TIMEOUT = 600000;
+    public final static int INACTIVITY_TIMEOUT = 10000;
 
     public Player(Socket socket, MatchRoom matchRoom) {
         this.socket = socket;
@@ -284,7 +284,7 @@ public class Player extends Thread {
 
         @Override
         public void run() {
-            Player.this.writeNotification(NotificationMessage.PLAYER_INACIVITY);
+            Player.this.writeNotification(NotificationMessage.PLAYER_INACTIVITY);
 
             Player.this.destroySelf();
         }
